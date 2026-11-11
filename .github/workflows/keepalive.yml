@@ -1,7 +1,7 @@
 # Garde le serveur OI (Supabase, offre gratuite) éveillé : sans requête pendant ~7 jours, le
 # projet est mis en pause et tout s'arrête (boutique, amis, groupes, matchmaking, clé des packs).
 # 2026-11-11 : toutes les 6 h (GitHub saute parfois une exécution planifiée : le passage de 06:17
-# du 11/11 n'a jamais eu lieu), deux requêtes (fonction serveur + lecture directe de la base), et
+# du 11/11 n'a jamais eu lieu), trois essais (la fonction serveur lit la base), et
 # la tâche se réactive elle-même : GitHub coupe les tâches planifiées d'un dépôt public après
 # 60 jours sans commit. Un échec envoie un e-mail au propriétaire du dépôt.
 name: Réveil du serveur OI
@@ -26,10 +26,6 @@ jobs:
           done
           echo "Serveur OI injoignable : projet Supabase peut-être en pause (le réactiver dans le tableau de bord)."
           exit 1
-      - name: Lecture directe de la base (API REST, clé publique)
-        run: |
-          code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 60 'https://fiqokgmnepwnqofxtbqm.supabase.co/rest/v1/' -H 'apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpcW9rZ21uZXB3bnFvZnh0YnFtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwNTI3MzEsImV4cCI6MjEwNjYyODczMX0.LE3KqCYKksrs_F4XeNPRzBEZULEYRb0BDqTgo128W04')
-          echo "HTTP $code"
       - name: Garde cette tâche planifiée active
         env:
           GH_TOKEN: ${{ github.token }}
